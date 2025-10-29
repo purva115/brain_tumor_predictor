@@ -60,17 +60,13 @@ data/
 
 Clone the repository:
 
-git clone https://github.com/yourusername/brain_mri_ai.git
+git clone (https://github.com/purva115/brain_tumor_predictor.git)
 cd brain_mri_ai
-
 pip install -r requirements.txt
-
-python -m src.app
-
+python -m src.inference.test_inference [to test from backend]
+python -m src.app [to run with frontend]
 Upload a brain MRI image
-
 Click Submit
-
 See the Prediction and Confidence Score
 
 
