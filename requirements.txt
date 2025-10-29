@@ -1,0 +1,23 @@
+# basic
+numpy
+pandas
+pillow
+matplotlib
+tqdm
+
+# images / medical
+opencv-python
+nibabel
+SimpleITK
+
+# ML / DL
+torch
+torchvision
+scikit-learn
+
+# ui
+gradio
+streamlit
+
+# utilities
+kaggle
