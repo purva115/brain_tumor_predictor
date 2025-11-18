@@ -21,3 +21,7 @@ streamlit
 
 # utilities
 kaggle
+
+# docs tool (not a pip package): Typst CLI is required to compile manual.typ
+# Download: https://github.com/typst/typst/releases
+# Add typst.exe to PATH, then run: typst compile .\manual.typ

@@ -69,5 +69,12 @@ Upload a brain MRI image
 Click Submit
 See the Prediction and Confidence Score
 
+## Build manual (Typst)
 
+- Typst is required to compile `manual.typ` to PDF. It is not a Python package.
+- Direct download: https://github.com/typst/typst/releases
+- After download, add the folder containing `typst.exe` to your PATH, then run:
 
+```
+typst compile .\manual.typ
+```
