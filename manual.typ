@@ -60,13 +60,44 @@ Steps to run the interface and get a prediction.
 2. Click "Upload Brain MRI" and select a JPG/PNG image.
 3. Click Submit to see Prediction and Confidence.
 
-=== Screenshots to add:
-- Show launching the app and the browser page URL. Capture the whole window including title.
-- Show the upload control with a sample MRI selected. Ensure the file chooser is visible.
-- Show the output with Prediction and Confidence. Make text large enough to be readable.
+=== Screenshot Guide
 
+The following screenshots illustrate the main steps of using the web app.
 
-= Additional Walkthrough 1: Backend Inference (no UI)
+1. Launch the app and confirm the browser page.
+   #figure(
+     image("assets/main_menu.png"),
+     caption: [
+       The Gradio "AI Brain Tumor Detection" home screen open in the browser. The URL bar and window title are visible.
+     ],
+   )
+
+2. Upload a brain MRI image and prepare to submit.
+   #figure(
+     image("assets/upload_menu.png"),
+     caption: [
+       The upload component with a sample MRI file selected and visible file chooser.
+     ],
+   )
+
+   #figure(
+     image("assets/submit_mri.png"),
+     caption: [
+       The interface showing the selected MRI and the cursor or button on **Submit**.
+     ],
+   )
+
+3. Review the prediction and confidence.
+   #figure(
+     image("assets/mri_no_result.png"),
+     caption: [
+       The results section displaying the predicted class (e.g., "No Tumor") and the associated confidence score in large, readable text.
+     ],
+   )
+
+#pagebreak()
+
+= Backend Inference (no UI)
 
 Use the backend pipeline to verify predictions from the console.
 
@@ -85,7 +116,7 @@ Use the backend pipeline to verify predictions from the console.
 
 #pagebreak()
 
-= Additional Walkthrough 2: Retrain the Model
+= Retrain the Model
 
 Prerequisites:
 - Place data as `data/BrainMRI/yes` and `data/BrainMRI/no`.
