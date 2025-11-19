@@ -58,16 +58,32 @@ data/
 
 ## Installation
 
-Clone the repository:
+Clone the repository and install dependencies:
 
-git clone (https://github.com/purva115/brain_tumor_predictor.git)
-cd brain_mri_ai
+```bash
+git clone https://github.com/purva115/brain_tumor_predictor.git
+cd brain_tumor_predictor
 pip install -r requirements.txt
-python -m src.inference.test_inference [to test from backend]
-python -m src.app [to run with frontend]
-Upload a brain MRI image
-Click Submit
-See the Prediction and Confidence Score
+```
+
+### Start the app
+
+From the project root, run the Gradio web app:
+
+```bash
+python -m src.app
+```
+
+Then:
+- Upload a brain MRI image
+- Click **Submit**
+- View the **prediction** and **confidence score** in the UI
+
+To quickly test the model from the backend only (no UI), you can run:
+
+```bash
+python -m src.inference.test_inference
+```
 
 ## Build manual (Typst)
 
