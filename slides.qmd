@@ -1,0 +1,280 @@
+---
+title: "Brain MRI Tumor Detection AI"
+subtitle: "ITCS-6155 Final Project"
+author: "Group-11"
+institute: "UNC Charlotte"
+date: "11-24-2025"
+format:
+  revealjs:
+    theme: solarized
+    css: custom.css
+    header-includes: |
+      <style>
+        .reveal ul, .reveal ol { font-size: 0.8em !important; }
+        .reveal figcaption, .reveal .figure-caption { text-align: center !important; font-style: italic !important; display: block !important; width: 100% !important; }
+        .reveal .quarto-figure { text-align: center !important; display: flex; flex-direction: column; align-items: center; }
+        .reveal .math { font-size: 0.8em !important; }
+      </style>
+    slide-number: true
+    incremental: false
+    transition: fade
+    toc: false
+    controls: true
+    progress: true
+    overview: true
+    code-fold: true
+    code-line-numbers: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Outline
+
+1. Motivation & Problem Statement
+2. Dataset & Preprocessing
+3. Model Architecture
+4. Training & Evaluation
+5. Results & Discussion
+6. Limitations & Future Work
+7. Conclusion
+
+## Project Pipeline
+
+```{mermaid}
+%%| echo: false
+flowchart LR
+    A[Raw MRI Images] --> B[Preprocessing]
+    B --> C{Split Data}
+    C -->|Train| D[Train ResNet18]
+    C -->|Val/Test| E[Evaluation]
+    D --> F[Saved Model]
+    F --> G[Gradio App]
+    E --> H[Metrics & Plots]
+```
+
+## Motivation & Problem Statement
+
+- Problem
+  - Detecting brain tumors early is challenging for radiologists due to data volume/complexity.
+  - Manual MRI analysis is error-prone and slow.
+- Why It's Important
+  - Early detection improves survival rates.
+  - Critical for resource-limited hospitals.
+- Who Is Affected
+  - Patients: Need faster/accurate diagnoses.
+  - Radiologists: Need AI-assisted efficient workflow.
+- Goal
+  - Develop an AI tool to classify MRI images (Tumor / No Tumor).
+
+## Dataset
+
+- Source
+  - Kaggle Brain MRI Dataset (labeled scans).
+- Classes
+  - `yes` (tumor)
+  - `no` (no tumor)
+- Preprocessing
+  - Resize to 224x224.
+  - Normalization & Channel conversion.
+  - Data augmentation (rotation, flip).
+
+## Data Preprocessing Pipeline
+
+Steps:
+
+1. Load images from directory structure.
+2. Resize to 224x224.
+3. Normalize pixel values.
+4. Split into Train/Val/Test.
+
+```python
+# Example transform pipeline
+from torchvision import transforms
+
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5], std=[0.5])
+])
+```
+
+## Model Architecture: ResNet18
+
+We use a ResNet18-based classifier (Transfer Learning):
+
+```python
+import torch.nn as nn
+import torchvision.models as models
+
+class BrainTumorResNet(nn.Module):
+    def __init__(self, num_classes=2):
+        super().__init__()
+        # Load pretrained ResNet18
+        self.base_model = models.resnet18(pretrained=True)
+        
+        # Modify final layer for binary classification
+        num_ftrs = self.base_model.fc.in_features
+        self.base_model.fc = nn.Linear(num_ftrs, num_classes)
+
+    def forward(self, x):
+        return self.base_model(x)
+```
+
+## Training Loop Snippet
+
+Standard training iteration:
+```python
+# Inside the training loop
+for images, labels in train_loader:
+    optimizer.zero_grad()
+    outputs = model(images)
+    loss = criterion(outputs, labels)
+    loss.backward()
+    optimizer.step()
+```
+- Loss Function: CrossEntropyLoss
+- Optimizer: Adam (lr=0.001)
+
+## Training Loop Visual
+
+```{mermaid}
+%%| echo: false
+%%| out-width: "70%"
+sequenceDiagram
+    participant DL as DataLoader
+    participant M as ResNet18 Model
+    participant L as Loss Function
+    participant O as Optimizer
+
+    loop Every Epoch
+        loop Every Batch
+            DL->>M: Input Images (Batch)
+            Note over O: Zero Gradients
+            M->>M: Forward Pass
+            M->>L: Predictions
+            L->>L: Calculate Loss (CrossEntropy)
+            L->>M: Backward Pass (Gradients)
+            O->>M: Update Weights (Step)
+        end
+        Note right of M: Validate Accuracy
+    end
+```
+
+## Training Setup
+
+- Stack
+  - **Language**: Python 3.10+
+  - **Deep Learning**: PyTorch / Torchvision
+  - **Processing**: OpenCV, SimpleITK, NumPy, Pandas
+  - **Interface**: Gradio
+- Strategy
+  - **Loss**: CrossEntropyLoss
+  - **Optimizer**: Adam (lr=0.001)
+  - **Hardware**: CPU (CUDA GPU optional for faster training)
+
+## Demo: Running the Application
+
+Launch the Gradio Web Interface:
+
+```bash
+# From the project root directory
+python -m src.app
+```
+
+## Command-line Inference Example:
+
+```python
+from src.inference.inference_pipeline import BrainTumorClassifier
+
+# Load the trained model
+classifier = BrainTumorClassifier("models/brain_tumor_model.pth")
+
+# Predict on a new MRI image
+label, confidence = classifier.predict("path/to/mri_image.jpg")
+
+print(f"Prediction: {label}")
+print(f"Confidence: {confidence:.2%}")
+```
+## Prediction Examples
+![Figure 1: Prediction Examples](assets/prediction_examples.png){fig-align="center"}
+
+## Evaluation Metrics
+- Metrics
+  - Accuracy.
+  - Precision / Recall / F1.
+  - Confusion matrix.
+- Why these metrics?
+  - Class imbalance considerations.
+  - 259 Yes, 22 NO
+
+## Formulas 
+$$
+\text{Accuracy} = \frac{\text{correct classifications}}{\text{total classifications}} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}
+$$
+
+$$
+\text{Precision} = \frac{\text{correctly classified actual positives}}{\text{everything classified as positive}} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+$$
+
+$$
+\text{Recall (TPR)} = \frac{\text{correctly classified actual positives}}{\text{all actual positives}} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+$$
+
+$$
+\text{F1 Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} = \frac{2\text{TP}}{2\text{TP} + \text{FP} + \text{FN}}
+$$
+
+## Results
+- Overall performance
+  - Accuracy = 100%
+  - Precision = 100%
+  - Recall = 100%
+  - F1 = 100%
+  - Suggest over fitting due to high quality data
+- Visualizations
+  - Confusion matrix.
+  - Example predictions (correct vs. incorrect).
+
+## Confusion Matrix
+![Figure 2: Confusion Matrix](assets/confusion_matrix.png){fig-align="center"}
+
+## Error Analysis
+- Common failure cases
+  - Ambiguous or low-quality images.
+  - Overlapping visual patterns between tumor types.
+- Insights
+  - What mistakes tell you about model limitations.
+
+## Limitations
+- Data limitations
+  - Dataset size, diversity, labeling noise.
+- Model limitations
+  - Overfitting, generalization to new scanners/hospitals.
+- Practical limitations
+  - Clinical deployment challenges.
+
+## Future Work
+
+- Short Term
+  - Host trained model on Streamlit/Cloud for public access.
+  - Create user manual for easier use (Completed!).
+- Long Term
+  - Gather feedback from medical professionals.
+  - Track false positives/negatives to refine performance.
+  - Support 3D MRI volumes.
+
+## Conclusion
+- Summary
+  - built a model to classify brain tumors from MRI scans.
+  - Achieved on the test set.
+- Key takeaway
+  - Automated tumor classification can support radiologists but not replace them.
+
+# Thank you!
+
+- Github: https://github.com/purva115/brain_tumor_predictor.
+- Presentation Link: https://diegolopez.quarto.pub/brain-tumor-classification/
+- Group 11:
+- Diego Lopez, Jake Pinos, Issam Alzouby, Purva Jagtap, Liliana Coste

@@ -18,6 +18,7 @@ scikit-learn
 # ui
 gradio
 streamlit
+rich
 
 # utilities
 kaggle
