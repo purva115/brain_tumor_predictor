@@ -202,12 +202,13 @@ print(f"Confidence: {confidence:.2%}")
 
 ## Evaluation Metrics
 - Metrics
+  - 51 Test Samples.
   - Accuracy.
   - Precision / Recall / F1.
   - Confusion matrix.
 - Why these metrics?
   - Class imbalance considerations.
-  - 259 Yes, 22 NO
+  - 259 Yes_Tumor, 22 NO_Tumor
 
 ## Formulas 
 $$
@@ -274,7 +275,6 @@ $$
 
 # Thank you!
 
-- Github: https://github.com/purva115/brain_tumor_predictor.
-- Presentation Link: https://diegolopez.quarto.pub/brain-tumor-classification/
-- Group 11:
-- Diego Lopez, Jake Pinos, Issam Alzouby, Purva Jagtap, Liliana Coste
+- [Github Repo brain_tumor_predictor](https://github.com/purva115/brain_tumor_predictor)
+- [QuartoPub Presentation Link](https://diegolopez.quarto.pub/brain-tumor-classification/)
+- Group 11: Diego Lopez, Jake Pinos, Issam Alzouby, Purva Jagtap, Liliana Coste
